@@ -36,6 +36,7 @@ end
 
 include_recipe "rvm::system"
 
+
 if node[:rvm][:install_rubies] == "enable"
   # set a default ruby
   rvm_default_ruby node[:rvm][:default_ruby]
@@ -69,5 +70,12 @@ node[:rvm][:gems].each_pair do |rstring, gems|
       options       gem[:options] if gem[:options]
       source        gem[:source]  if gem[:source]
     end
+  end
+end
+
+# Reset to not use RVM
+if node[:rvm][:reset]
+  execute 'rvm reset' do
+    not_if 'rvm current | grep system'
   end
 end
